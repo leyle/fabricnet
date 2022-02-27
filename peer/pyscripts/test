@@ -1,0 +1,21 @@
+- AnchorPeers:
+  - - Host: peer0.emali
+      Port: 5001
+    - Host: peer1.emali
+      Port: 5002
+  ID: org1MSP
+  MSPDir: /tmp/mspdir
+  Name: org1MSP
+  Policies:
+    Admins:
+      Rule: OR('org1MSP.admin')
+      Type: Signature
+    Endorsement:
+      Rule: OR('org1MSP.peer')
+      Type: Signature
+    Readers:
+      Rule: OR('org1MSP.admin', 'org1MSP.peer', 'org1MSP.client')
+      Type: Signature
+    Writers:
+      Rule: OR('org1MSP.admin', 'org1MSP.peer', 'org1MSP.client')
+      Type: Signature

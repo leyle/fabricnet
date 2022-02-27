@@ -1,0 +1,50 @@
+version: '3.6'
+
+networks:
+    mytest:
+        name: $DOCKER_NETWORK_NAME
+
+services:
+  $PEER_CONTAINER_NAME:
+    image: hyperledger/fabric-peer:$FABRIC_CLIENT_VERSION
+    container_name: $PEER_CONTAINER_NAME
+    command: sh -c 'peer node start'
+    environment:
+        - TZ=$TIMEZONE
+
+        - CORE_PEER_ID=${PEER_CONTAINER_NAME}
+        - CORE_PEER_ADDRESS=${PEER_CONTAINER_NAME}:${PEER_PORT}
+        - CORE_PEER_LISTENADDRESS=0.0.0.0:${PEER_PORT}
+
+        - CORE_PEER_GOSSIP_BOOTSTRAP=${PEER_CONTAINER_NAME}:${PEER_PORT}
+        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=${PEER_CONTAINER_NAME}:${PEER_PORT}
+
+        - CORE_PEER_CHAINCODEADDRESS=${PEER_CONTAINER_NAME}:${PEER_PORT2}
+        - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${PEER_PORT2}
+
+        - CORE_PEER_LOCALMSPID=${ORG_MSPID}
+        - CORE_PEER_MSPCONFIGPATH=/etc/peer/msp
+
+        - CORE_PEER_TLS_ENABLED=true
+        - CORE_PEER_TLS_CERT_FILE=/etc/peer/tls-msp/signcerts/cert.pem
+        - CORE_PEER_TLS_KEY_FILE=/etc/peer/tls-msp/keystore/key.pem
+        - CORE_PEER_TLS_ROOTCERT_FILE=/etc/peer/tls-msp/tlscacerts/tls-ca-cert.pem
+
+        - FABRIC_LOGGING_SPEC=INFO
+
+          # dynamic leader election
+        - CORE_PEER_GOSSIP_USELEADERELECTION=true
+        - CORE_PEER_GOSSIP_ORGLEADER=false
+        - CORE_PEER_PROFILE_ENABLED=true
+
+    volumes:
+        - ${PEER_HOST_VOLUME}:/etc/peer
+        - ${PEER_HOST_VOLUME}/production:/var/hyperledger/production
+        - $CC_HOST_BUILDER:/etc/peer/chaincode/state/builder
+        - $PEER_CORE_FILE:/etc/hyperledger/fabric/core.yaml
+    networks:
+        - mytest
+    ports:
+        - $PEER_PORT:$PEER_PORT
+        - $PEER_PORT2:$PEER_PORT2
+        - $PEER_PORT3:$PEER_PORT3
