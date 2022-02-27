@@ -25,6 +25,7 @@ def parse_cmd():
     parser.add_argument('--global_env', help='global env file path')
     parser.add_argument('--local_env', help='local env file path')
     parser.add_argument('--user_env', default="", help='user env file path')
+    parser.add_argument('--org_env', default="", help='org env file path')
 
     args = parser.parse_args()
     return args
@@ -86,8 +87,14 @@ def merge(base, patch):
 
     return base
 
-def merge_envs(global_env_file, local_env_file, user_env_file):
+def merge_envs(global_env_file, org_env, local_env_file, user_env_file):
     base_envs = read_file(global_env_file)
+    org_envs = read_file(org_env)
+
+    # merge org env
+    base_envs = merge(base_envs, org_envs)
+
+    # merge local env
     local_envs = read_file(local_env_file)
     base_envs = merge(base_envs, local_envs)
 
@@ -104,9 +111,10 @@ if __name__ == "__main__":
     global_env = args.global_env
     local_env = args.local_env
     user_env = args.user_env
+    org_env = args.org_env
 
-    if not all([global_env, local_env]):
-        print("need to set global and local env file path, use --help to see more.")
+    if not all([global_env, local_env, org_env]):
+        print("need to set global/local/org env file path, use --help to see more.")
         sys.exit(1)
 
-    merge_envs(global_env, local_env, user_env)
+    merge_envs(global_env, org_env, local_env, user_env)

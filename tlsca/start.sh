@@ -23,4 +23,7 @@ sudo chown -R ${USER}:${GROUP} $HOST_VOLUME_BASE
 # enroll ca admin
 ./enrollCaAdmin.sh
 
+# share local env
+./shareEnv.sh
+
 echo "Start done."

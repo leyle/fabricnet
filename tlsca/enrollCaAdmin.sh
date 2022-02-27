@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# enroll ca server admin account, export msp to ../volume/admin
+# enroll ca server admin account, export msp to $SOMEPATH/admin
 
 . ./env.sh
 
@@ -13,7 +13,7 @@ export FABRIC_CA_CLIENT_TLS_CERTFILES=$HOST_VOLUME_SERVER/ca-cert.pem
 # if exist admin's msp, delete it 
 rm -rf $FABRIC_CA_CLIENT_HOME
 
-fabric-ca-client enroll -d -u https://$FABRIC_CA_ADMIN:$FABRIC_CA_PASSWD@$TLS_CA_HOST_PORT --enrollment.profile tls --csr.hosts ${CA_CSR_CN}
+fabric-ca-client enroll -d -u https://$FABRIC_TLS_CA_ADMIN:$FABRIC_TLS_CA_PASSWD@$TLS_CA_HOST_PORT --enrollment.profile tls --csr.hosts ${CA_CSR_CN}
 
 # rename keystore and tlscacerts
 mv $FABRIC_CA_CLIENT_MSP/keystore/*_sk $FABRIC_CA_CLIENT_MSP/keystore/key.pem
