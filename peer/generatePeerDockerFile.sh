@@ -32,6 +32,9 @@ do
     echo "export PEER_CORE_FILE=$PEER_CORE_FILE" >> $PEER_ENV_FILE
     echo "export CC_HOST_BUILDER=$CC_HOST_BUILDER" >> $PEER_ENV_FILE
     echo "export PEER_CONTAINER_NAME=$PEER_CONTAINER_NAME" >> $PEER_ENV_FILE
+    echo "export PEER_PORT=$PEER_PORT" >> $PEER_ENV_FILE
+    echo "export PEER_PORT2=$PEER_PORT2" >> $PEER_ENV_FILE
+    echo "export PEER_PORT3=$PEER_PORT3" >> $PEER_ENV_FILE
 
     # copy env.sh to peer's folder
     cp ./env.sh $PEER_HOST_VOLUME/env.sh

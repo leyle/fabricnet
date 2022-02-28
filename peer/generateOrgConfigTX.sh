@@ -21,5 +21,5 @@ do
 done
 
 ORG_BASE=$HOST_NODE_VOLUME/$ORG_NAME
-ORG_MSP=$ORG_BASE/msp
+ORG_MSP=$ORG_NAME/msp
 python ./pyscripts/generateConfigTX.py --mspid $ORG_MSPID --mspdir $ORG_MSP --peers $PEERS --filepath $ORG_BASE/configtx.yaml

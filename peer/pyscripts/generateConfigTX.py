@@ -50,9 +50,7 @@ def json_format(mspid, mspdir, peers):
                 "Rule": f"OR('{mspid}.peer')"
             }
         },
-        "AnchorPeers": [
-            anchor_peers,
-        ]
+        "AnchorPeers": anchor_peers,
     }
 
     return [one_tx]
