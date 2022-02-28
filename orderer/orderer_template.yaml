@@ -1,0 +1,48 @@
+version: '3.6'
+
+networks:
+    mytest:
+        name: $DOCKER_NETWORK_NAME
+
+services:
+    $PEER_CONTAINER_NAME:
+        image: hyperledger/fabric-orderer:$FABRIC_CLIENT_VERSION
+        container_name: $PEER_CONTAINER_NAME
+        restart: unless-stopped
+        command: sh -c 'orderer'
+        environment:
+            - TZ=$TIMEZONE
+            - FABRIC_LOGGING_SPEC=INFO
+            - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+            - ORDERER_GENERAL_LISTENPORT=${ORDERER_PORT}
+            - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+
+            # admin
+            - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:${ORDERER_OSN_PORT}
+            - ORDERER_ADMIN_TLS_ENABLED=false
+            - ORDERER_ADMIN_TLS_CERTIFICATE=""
+            - ORDERER_ADMIN_TLS_PRIVATEKEY=""
+            - ORDERER_ADMIN_TLS_ROOTCAS=[]
+            - ORDERER_ADMIN_TLS_CLIENTAUTHREQUIRED=true
+            - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+
+            - ORDERER_GENERAL_LOCALMSPID=${ORG_MSPID}
+            - ORDERER_GENERAL_LOCALMSPDIR=/etc/orderer/msp
+
+            # enable TLS
+            - ORDERER_GENERAL_TLS_ENABLED=true
+            - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/orderer/tls-msp/signcerts/cert.pem
+            - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/orderer/tls-msp/keystore/key.pem
+            - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/orderer/tls-msp/tlscacerts/tls-ca-cert.pem]
+
+            - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/etc/orderer/tls-msp/signcerts/cert.pem
+            - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/etc/orderer/tls-msp/keystore/key.pem
+            - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/etc/orderer/tls-msp/tlscacerts/tls-ca-cert.pem]
+        volumes:
+            - $PEER_HOST_VOLUME:/etc/orderer
+            - $PEER_HOST_VOLUME/production:/var/hyperledger/production
+        networks:
+            - mytest
+        ports:
+            - $ORDERER_PORT:$ORDERER_PORT
+            - $ORDERER_OSN_PORT:$ORDERER_OSN_PORT
