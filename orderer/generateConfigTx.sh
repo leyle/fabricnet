@@ -34,10 +34,12 @@ do
 
     # generate env.orderer file
     ENV_FILE=$DST/env.orderer
-    echo "HOST=$ORDERER_NAME" > $ENV_FILE
-    echo "PORT=$CUR_ORDERER_PORT" >> $ENV_FILE
-    echo "CLIENT_TLS_CERT=$DST/cert.pem" >> $ENV_FILE
-    echo "server_TLS_CERT=$DST/cert.pem" >> $ENV_FILE
+    echo "export HOST=$ORDERER_NAME" > $ENV_FILE
+    echo "export ORDERER_HOST=$ORDERER_NAME" >> $ENV_FILE
+    echo "export ORDERER_PORT=$CUR_ORDERER_PORT" >> $ENV_FILE
+    echo "export ORDERER_OSN_PORT=$CUR_ORDERER_OSN_PORT" >> $ENV_FILE
+    echo "export CLIENT_TLS_CERT=$DST/cert.pem" >> $ENV_FILE
+    echo "export SERVER_TLS_CERT=$DST/cert.pem" >> $ENV_FILE
 
     chmod +x $ENV_FILE
 done

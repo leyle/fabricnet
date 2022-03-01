@@ -56,7 +56,6 @@ def process_nodes_info(nodes):
     data = []
     for node in nodes:
         # env_file = f"{node}/env.orderer"
-        print("node path", node)
         env_file = os.path.join(node, 'env.orderer')
         node_data = _parse_env_file(env_file)
         data = _generate_consenter(data, node_data)
@@ -66,9 +65,9 @@ def process_nodes_info(nodes):
 def _generate_consenter(data, node_info):
     info = {
         "Host": node_info['HOST'],
-        "Port": int(node_info['PORT']),
+        "Port": int(node_info['ORDERER_PORT']),
         "ClientTLSCert": node_info['CLIENT_TLS_CERT'],
-        "ServerTLSCert": node_info['server_TLS_CERT'],
+        "ServerTLSCert": node_info['SERVER_TLS_CERT'],
     }
     if not data:
         data = [info]
@@ -81,6 +80,8 @@ def _parse_env_file(file):
     print("file path", file)
     with open(file, 'r') as f:
         lines = f.readlines()
+    lines = [line.strip() for line in lines]
+    lines = [line.replace('export ', '') for line in lines]
     data = {}
     for line in lines:
         key, val = line.split('=')
