@@ -2,6 +2,8 @@
 
 ./init.sh
 
+. ./env.sh
+
 # generate org msp
 ./generateOrgMSP.sh
 

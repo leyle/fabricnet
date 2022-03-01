@@ -9,6 +9,11 @@ echo $END_IDX
 
 for idx in $(seq 0 $END_IDX);
 do
+    PEER_BASE=$((idx * 10))
+    CUR_PEER_PORT1=$((PEER_PORT + PEER_BASE))
+    CUR_PEER_PORT2=$((PEER_PORT2 + PEER_BASE))
+    CUR_PEER_PORT3=$((PEER_PORT3 + PEER_BASE))
+
     PEER_IDX=peer${idx}
     PEER_NAME=${PEER_IDX}.${ORG_NAME}.${TLD}
     echo $PEER_NAME
@@ -32,9 +37,9 @@ do
     echo "export PEER_CORE_FILE=$PEER_CORE_FILE" >> $PEER_ENV_FILE
     echo "export CC_HOST_BUILDER=$CC_HOST_BUILDER" >> $PEER_ENV_FILE
     echo "export PEER_CONTAINER_NAME=$PEER_CONTAINER_NAME" >> $PEER_ENV_FILE
-    echo "export PEER_PORT=$PEER_PORT" >> $PEER_ENV_FILE
-    echo "export PEER_PORT2=$PEER_PORT2" >> $PEER_ENV_FILE
-    echo "export PEER_PORT3=$PEER_PORT3" >> $PEER_ENV_FILE
+    echo "export PEER_PORT=$CUR_PEER_PORT1" >> $PEER_ENV_FILE
+    echo "export PEER_PORT2=$CUR_PEER_PORT2" >> $PEER_ENV_FILE
+    echo "export PEER_PORT3=$CUR_PEER_PORT3" >> $PEER_ENV_FILE
 
     # copy env.sh to peer's folder
     cp ./env.sh $PEER_HOST_VOLUME/env.sh
@@ -46,5 +51,5 @@ do
     chmod +x $PEER_HOST_VOLUME/peer.env
     chmod +x $PEER_HOST_VOLUME/start.sh
 
-    chmod 777 -R $PEER_HOST_VOLUME
+    chmod 775 -R $PEER_HOST_VOLUME
 done

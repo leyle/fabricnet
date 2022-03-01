@@ -12,7 +12,9 @@ do
     PEER_IDX=peer${idx}
     PEER_NAME=${PEER_IDX}.${ORG_NAME}.${TLD}
     echo $PEER_NAME
-    PEER_HOST_PORT=$PEER_NAME:$PEER_PORT
+    PORT_BASE=$((idx * 10))
+    CUR_PEER_PORT1=$((PEER_PORT + PORT_BASE))
+    PEER_HOST_PORT=$PEER_NAME:$CUR_PEER_PORT1
     if [ -z "$PEERS" ]; then
         PEERS=$PEER_HOST_PORT
     else
