@@ -9,10 +9,13 @@ PEERS=""
 
 for idx in $(seq 0 $END_IDX);
 do
+    PORT_BASE=$((idx * 10))
+    CUR_ORDERER_PORT=$((ORDERER_PORT + PORT_BASE))
+
     PEER_IDX=orderer${idx}
     PEER_NAME=${PEER_IDX}.${ORG_NAME}.${TLD}
     echo $PEER_NAME
-    PEER_HOST_PORT=$PEER_NAME:$ORDERER_PORT
+    PEER_HOST_PORT=$PEER_NAME:$CUR_ORDERER_PORT
     if [ -z "$PEERS" ]; then
         PEERS=$PEER_HOST_PORT
     else

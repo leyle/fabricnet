@@ -1,3 +1,5 @@
+user.env
+env.sh
 *.pyc
 *.swp
 __pycache__/

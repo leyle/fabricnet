@@ -9,10 +9,14 @@ echo $END_IDX
 NODES_PATH=""
 for idx in $(seq 0 $END_IDX);
 do
+    PORT_BASE=$((idx * 10))
+    CUR_ORDERER_PORT=$((ORDERER_PORT + PORT_BASE))
+    CUR_ORDERER_OSN_PORT=$((ORDERER_OSN_PORT + PORT_BASE))
+
     PEER_IDX=orderer${idx}
     ORDERER_NAME=${PEER_IDX}.${ORG_NAME}.${TLD}
     echo $ORDERER_NAME
-    ORDERER_ADDRESS=$ORDERER_NAME:$ORDERER_PORT
+    ORDERER_ADDRESS=$ORDERER_NAME:$CUR_ORDERER_PORT
     
     HOST_VOLUME_BASE=$HOST_NODE_VOLUME
     ORDERER_HOST_VOLUME=$HOST_VOLUME_BASE/$ORDERER_NAME
@@ -31,7 +35,7 @@ do
     # generate env.orderer file
     ENV_FILE=$DST/env.orderer
     echo "HOST=$ORDERER_NAME" > $ENV_FILE
-    echo "PORT=$ORDERER_PORT" >> $ENV_FILE
+    echo "PORT=$CUR_ORDERER_PORT" >> $ENV_FILE
     echo "CLIENT_TLS_CERT=$DST/cert.pem" >> $ENV_FILE
     echo "server_TLS_CERT=$DST/cert.pem" >> $ENV_FILE
 
