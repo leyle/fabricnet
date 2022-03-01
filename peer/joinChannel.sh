@@ -21,7 +21,7 @@ if [ ! -f "$ORDERER_TLS_CA_FILE" ]; then
 fi
 
 ORDERER_HOST=$3
-if [ -z "$ORDERER_HOST"]; then
+if [ -z "$ORDERER_HOST" ]; then
     echo "No orderer host"
     exit 1
 fi
@@ -37,8 +37,7 @@ PATH_BASE=${PWD}
 export FABRIC_CFG_PATH=$PWD
 export CORE_PEER_LOCALMSPID=$ORG_MSPID
 export CORE_PEER_ADDRESS=${PEER_CONTAINER_NAME}:${PEER_PORT}
-ADMIN_PATH=$HOST_NODE_VOLUME/users/$NODE_ADMIN_NAME/msp
-export CORE_PEER_MSPCONFIGPATH=$ADMIN_PATH
+export CORE_PEER_MSPCONFIGPATH=$PATH_BASE/msp
 
 # tls 
 export CORE_PEER_TLS_ENABLED=true
@@ -51,7 +50,7 @@ export TLS_CA_FILE=$ORDERER_TLS_CA_FILE
 ORDERER_HOSTPORT=$ORDERER_HOST:$ORDERER_PORT
 
 # peer channel join -b $CHANNEL_BLOCK
-peer channel fetch 0 ${CHANNEL_NAME}.block -o ${ORDERER_HOSTPORT} --ordererTLSHostnameOverride $ORDERER_HOST -c $CHANNEL_NAME --tls --cafile $TLS_CA_FILE
+peer channel fetch config ${CHANNEL_NAME}.block -o ${ORDERER_HOSTPORT} --ordererTLSHostnameOverride $ORDERER_HOST -c $CHANNEL_NAME --tls --cafile $TLS_CA_FILE
 peer channel join -b ${CHANNEL_NAME}.block
 
 # 
