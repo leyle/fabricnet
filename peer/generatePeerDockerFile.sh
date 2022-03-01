@@ -47,8 +47,12 @@ do
     # copy start.sh to peer's folder
     cp ./peerStart.sh $PEER_HOST_VOLUME/start.sh
 
+    # copy joinChannel.sh to peer's folder
+    cp ./joinChannel.sh $PEER_HOST_VOLUME/joinChannel.sh
+
     chmod +x $PEER_HOST_VOLUME/env.sh
     chmod +x $PEER_HOST_VOLUME/peer.env
+    chmod +x $PEER_HOST_VOLUME/joinChannel.sh
     chmod +x $PEER_HOST_VOLUME/start.sh
 
     chmod 775 -R $PEER_HOST_VOLUME
