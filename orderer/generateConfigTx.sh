@@ -50,3 +50,6 @@ python ./pyscripts/createDefaultTX.py --base $CONFIGTX_BASE \
    --org $ORDERE_CONFIG_TX \
   --nodes $NODES_PATH \
  --filepath $RESULT_FILE 
+
+# copy env.sh to channel path
+cp ./env.sh $HOST_CHANNEL_VOLUME/env.sh
