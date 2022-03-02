@@ -14,11 +14,11 @@ services:
             - TZ=$TIMEZONE
             - FABRIC_LOGGING_SPEC=INFO
             - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-            - ORDERER_GENERAL_LISTENPORT=7050
+            - ORDERER_GENERAL_LISTENPORT=$ORDERER_PORT
             - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
 
             # admin
-            - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:9443
+            - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:$ORDERER_OSN_PORT
             - ORDERER_ADMIN_TLS_ENABLED=false
             - ORDERER_ADMIN_TLS_CERTIFICATE=""
             - ORDERER_ADMIN_TLS_PRIVATEKEY=""
@@ -29,7 +29,7 @@ services:
             - ORDERER_GENERAL_LOCALMSPID=${ORG_MSPID}
             - ORDERER_GENERAL_LOCALMSPDIR=/etc/orderer/msp
             # operations
-            - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:8443
+            - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:$ORDERER_OPERATION_PORT
             - ORDERER_METRICS_PROVIDER=prometheus
 
             # enable TLS
@@ -47,5 +47,6 @@ services:
         networks:
             - mytest
         ports:
-            - $ORDERER_PORT:7050
-            - $ORDERER_OSN_PORT:9443
+            - $ORDERER_PORT:$ORDERER_PORT
+            - $ORDERER_OSN_PORT:$ORDERER_OSN_PORT
+            - $ORDERER_OPERATION_PORT:$ORDERER_OPERATION_PORT

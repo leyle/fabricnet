@@ -27,4 +27,5 @@ DST=$HOST_CHANNEL_VOLUME
 mkdir -p $DST
 cp ./createGenesisChannelBlock.sh $DST/createGenesisChannelBlock.sh
 cp ./joinOrderer.sh $DST/joinOrderer.sh
+cp ./mergeConfigtx.sh $DST/mergeConfigtx.sh
 cp ./pyscripts/mergeConfigtx.py $DST/mergeConfigtx.py

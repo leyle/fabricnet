@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # this script executed in cli docker container
+# stop when error occurred
+set -e
 
 . ./env.sh
 . ./peer.env

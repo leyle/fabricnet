@@ -3,6 +3,4 @@
 . ./env.sh
 . ./peer.env
 
-docker-compose -f peer-compose.yaml up -d
-
-sudo chown -R ${USER}:${GROUP} ./
+docker-compose -f peer-compose.yaml down -v
