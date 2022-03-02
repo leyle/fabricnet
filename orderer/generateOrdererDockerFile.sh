@@ -37,6 +37,7 @@ do
 
     # copy start.sh to peer's folder
     cp ./ordererStart.sh $PEER_HOST_VOLUME/start.sh
+    cp ./ordererStop.sh $PEER_HOST_VOLUME/stop.sh
 
     chmod +x $PEER_HOST_VOLUME/env.sh
     chmod +x $PEER_HOST_VOLUME/orderer.env

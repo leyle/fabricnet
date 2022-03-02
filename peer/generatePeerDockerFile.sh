@@ -46,6 +46,7 @@ do
 
     # copy start.sh to peer's folder
     cp ./peerStart.sh $PEER_HOST_VOLUME/start.sh
+    cp ./peerStop.sh $PEER_HOST_VOLUME/stop.sh
 
     # copy joinChannel.sh to peer's folder
     cp ./joinChannel.sh $PEER_HOST_VOLUME/joinChannel.sh
