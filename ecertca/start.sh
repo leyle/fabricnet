@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # import system wide env.sh
 ./init.sh

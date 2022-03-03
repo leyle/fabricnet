@@ -10,19 +10,23 @@ echo $END_IDX
 for idx in $(seq 0 $END_IDX);
 do
     PEER_BASE=$((idx * 10))
+    # regular port
     CUR_PEER_PORT1=$((PEER_PORT + PEER_BASE))
+    # operation port
     CUR_PEER_PORT2=$((PEER_PORT2 + PEER_BASE))
+    # chaincode port
     CUR_PEER_PORT3=$((PEER_PORT3 + PEER_BASE))
 
     PEER_IDX=peer${idx}
     PEER_NAME=${PEER_IDX}.${ORG_NAME}.${TLD}
-    echo $PEER_NAME
     PEER_CONTAINER_NAME=$PEER_NAME
+    CC_HOST_NAME=cc${idx}.${ORG_NAME}.${TLD}
+    echo $PEER_NAME
     
     HOST_VOLUME_BASE=$HOST_NODE_VOLUME
     PEER_HOST_VOLUME=$HOST_VOLUME_BASE/$PEER_NAME
     PEER_CORE_FILE=$PEER_HOST_VOLUME/core.yaml
-    CC_HOST_BUILDER=$PEER_HOST_VOLUME/chaincode
+    CC_HOST_BUILDER=$PEER_HOST_VOLUME/chaincode/vm
 
     PEER_DOCKER_COMPOSE_FILE=$PEER_HOST_VOLUME/peer-compose.yaml
 
@@ -37,6 +41,8 @@ do
     echo "export PEER_CORE_FILE=$PEER_CORE_FILE" >> $PEER_ENV_FILE
     echo "export CC_HOST_BUILDER=$CC_HOST_BUILDER" >> $PEER_ENV_FILE
     echo "export PEER_CONTAINER_NAME=$PEER_CONTAINER_NAME" >> $PEER_ENV_FILE
+    echo "export CC_HOST_NAME=$CC_HOST_NAME" >> $PEER_ENV_FILE
+
     echo "export PEER_PORT=$CUR_PEER_PORT1" >> $PEER_ENV_FILE
     echo "export PEER_PORT2=$CUR_PEER_PORT2" >> $PEER_ENV_FILE
     echo "export PEER_PORT3=$CUR_PEER_PORT3" >> $PEER_ENV_FILE
@@ -50,6 +56,9 @@ do
 
     # copy joinChannel.sh to peer's folder
     cp ./joinChannel.sh $PEER_HOST_VOLUME/joinChannel.sh
+
+    # copy chaincode to peer's folder
+    cp -r chaincode $PEER_HOST_VOLUME/chaincode
 
     chmod +x $PEER_HOST_VOLUME/env.sh
     chmod +x $PEER_HOST_VOLUME/peer.env

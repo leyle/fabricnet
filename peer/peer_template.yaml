@@ -15,6 +15,7 @@ services:
         - CORE_PEER_ID=${PEER_CONTAINER_NAME}
         - CORE_PEER_ADDRESS=${PEER_CONTAINER_NAME}:$PEER_PORT
         - CORE_PEER_LISTENADDRESS=0.0.0.0:$PEER_PORT
+        - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:$PEER_PORT2
 
         - CORE_PEER_GOSSIP_BOOTSTRAP=${PEER_CONTAINER_NAME}:$PEER_PORT
         - CORE_PEER_GOSSIP_EXTERNALENDPOINT=${PEER_CONTAINER_NAME}:$PEER_PORT
@@ -35,17 +36,18 @@ services:
         - CORE_PEER_PROFILE_ENABLED=true
 
         # operations
-        - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:$PEER_PORT2
+        - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:$PEER_PORT3
         - CORE_METRICS_PROVIDER=prometheus
 
     volumes:
         - ${PEER_HOST_VOLUME}:/etc/peer
         - ${PEER_HOST_VOLUME}/production:/var/hyperledger/production
-        - $CC_HOST_BUILDER:/etc/peer/chaincode/state/builder
+        # external chaincode builder path should be parent of 'bin/'
+        - $CC_HOST_BUILDER:/chaincode/builder
         - $PEER_CORE_FILE:/etc/hyperledger/fabric/core.yaml
     networks:
         - mytest
     ports:
         - $PEER_PORT:$PEER_PORT
         - $PEER_PORT2:$PEER_PORT2
-        # - $PEER_PORT3:9443
+        - $PEER_PORT3:$PEER_PORT3

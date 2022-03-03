@@ -571,7 +571,7 @@ chaincode:
     # builders in the order specified below.
     # To override this property via env variable use CORE_CHAINCODE_EXTERNALBUILDERS: [{name: x, path: dir1}, {name: y, path: dir2}]
     externalBuilders:
-        - path: /etc/peer/chaincode/state/builder
+        - path: /chaincode/builder
           name: emali-builder
         #   propagateEnvironment:
         #      - ENVVAR_NAME_TO_PROPAGATE_FROM_PEER

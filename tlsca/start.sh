@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # import system wide env.sh
 ./init.sh
@@ -16,8 +17,8 @@ sed "s|\$CA_CONTAINER_NAME|$CA_CONTAINER_NAME|g" ca_template.yaml > $WORKDIR/ca.
 docker-compose -f $WORKDIR/ca.yaml up -d
 
 echo "Fabric CA Server started..."
-echo "sleep 3s"
-sleep 3 
+echo "sleep 5s"
+sleep 5 
 sudo chown -R ${USER}:${GROUP} $HOST_VOLUME_BASE
 
 # enroll ca admin
