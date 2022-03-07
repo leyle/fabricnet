@@ -1,0 +1,18 @@
+version: '3.6'
+
+networks:
+    mytest:
+        name: $DOCKER_NETWORK_NAME
+
+services:
+  $CC_HOST_NAME:
+    image: leyle123456/asset-transfer-basic:$CC_VERSION
+    container_name: $CC_HOST_NAME
+    environment:
+        - TZ=$TIMEZONE
+        - CHAINCODE_SERVER_ADDRESS=$CC_HOST_NAME:$CC_PORT
+        - CHAINCODE_ID=$CC_ID
+    networks:
+        - mytest
+    ports:
+        - $CC_PORT:9999
