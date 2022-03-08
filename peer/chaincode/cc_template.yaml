@@ -6,7 +6,7 @@ networks:
 
 services:
   $CC_HOST_NAME:
-    image: leyle123456/asset-transfer-basic:$CC_VERSION
+    image: registry.gitlab.com/blockchain-project-emaliandzhengzhou/fabric-chaincode:$CC_PKG_VER
     container_name: $CC_HOST_NAME
     environment:
         - TZ=$TIMEZONE
@@ -15,4 +15,4 @@ services:
     networks:
         - mytest
     ports:
-        - $CC_PORT:9999
+        - $CC_PORT:$CC_PORT
