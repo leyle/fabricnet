@@ -24,5 +24,6 @@ tar zcvf $CC_PKG_NAME metadata.json code.tar.gz
 VM_PATH=$CC_HOST_BUILDER
 DST_CC_PATH=$VM_PATH
 mkdir -p $DST_CC_PATH
+cd $WORK_BASE
 cp -r $TMP/builder/* $DST_CC_PATH
 rm -r $TMP

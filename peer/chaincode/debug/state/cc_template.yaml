@@ -1,0 +1,18 @@
+version: '3.6'
+
+networks:
+    mytest:
+        name: $DOCKER_NETWORK_NAME
+
+services:
+  $CC_HOST_NAME:
+    image: registry.gitlab.com/blockchain-project-emaliandzhengzhou/fabric-chaincode:$CC_PKG_VER
+    container_name: $CC_HOST_NAME
+    environment:
+        - TZ=$TIMEZONE
+        - CHAINCODE_SERVER_ADDRESS=$CC_HOST_NAME:$CC_PORT
+        - CHAINCODE_ID=$CC_ID
+    networks:
+        - mytest
+    ports:
+        - $CC_PORT:$CC_PORT
