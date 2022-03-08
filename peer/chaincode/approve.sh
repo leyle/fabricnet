@@ -26,6 +26,13 @@ if [ -z "$ORDERER_PORT" ]; then
     exit 1
 fi
 
+# --cafile Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint 
+ORDERER_TLS_CA_FILE=$5
+if [ ! -f "$ORDERER_TLS_CA_FILE" ]; then
+    echo "No orderer tls ca file"
+    exit 1
+fi
+
 # orderer info
 ORDERER_HOSTPORT=$ORDERER_HOST:$ORDERER_PORT
 
@@ -34,6 +41,7 @@ echo "export CC_SEQUENCE=$CC_SEQUENCE" > last.env
 echo "export ORDERER_HOST=$ORDERER_HOST" >> last.env
 echo "export ORDERER_PORT=$ORDERER_PORT" >> last.env
 echo "export ORDERER_HOSTPORT=$ORDERER_HOSTPORT" >> last.env
+echo "export ORDERER_TLS_CA_FILE=$ORDERER_TLS_CA_FILE" >> last.env
 
 # approve chaincode definition
 # https://stedolan.github.io/jq/manual/
@@ -48,6 +56,7 @@ if [ -z "$CC_PKG_ID" ]; then
     exit 1
 fi
 
-peer lifecycle chaincode approveformyorg -o ${ORDERER_HOSTPORT} --ordererTLSHostnameOverride ${ORDERER_HOST} --channelID ${APP_CHANNEL_NAME} --name ${CC_NAME} --version ${CC_PKG_VER} --package-id ${CC_PKG_ID} --sequence ${CC_SEQUENCE} --tls true --cafile ${TLS_CA_FILE}
 
-peer lifecycle chaincode checkcommitreadiness --channelID ${APP_CHANNEL_NAME} --name ${CC_NAME} --version ${CC_PKG_VER} --sequence ${CC_SEQUENCE} --tls true --cafile ${TLS_CA_FILE}
+peer lifecycle chaincode approveformyorg -o ${ORDERER_HOSTPORT} --ordererTLSHostnameOverride ${ORDERER_HOST} --channelID ${APP_CHANNEL_NAME} --name ${CC_NAME} --version ${CC_PKG_VER} --package-id ${CC_PKG_ID} --sequence ${CC_SEQUENCE} --tls true --cafile ${ORDERER_TLS_CA_FILE}
+
+peer lifecycle chaincode checkcommitreadiness --channelID ${APP_CHANNEL_NAME} --name ${CC_NAME} --version ${CC_PKG_VER} --sequence ${CC_SEQUENCE} --tls true --cafile ${ORDERER_TLS_CA_FILE}

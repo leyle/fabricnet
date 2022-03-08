@@ -8,7 +8,7 @@ services:
   $CA_CONTAINER_NAME:
     image: hyperledger/fabric-ca:$FABRIC_CA_VERSION
     container_name: $CA_CONTAINER_NAME
-    command: sh -c 'fabric-ca-server start -d -b $FABRIC_TLS_CA_ADMIN:$FABRIC_TLS_CA_PASSWD --cfg.affiliations.allowremove --cfg.identities.allowremove --port $FABRIC_TLS_CA_PORT'
+    command: sh -c 'fabric-ca-server start -d -b $FABRIC_ECERT_CA_ADMIN:$FABRIC_ECERT_CA_PASSWD --cfg.affiliations.allowremove --cfg.identities.allowremove --port 7054'
     environment:
       - TZ=$TIMEZONE
       - FABRIC_CA_HOME=$CA_CONTAINER_SERVER_HOME
@@ -24,4 +24,4 @@ services:
     networks:
       - mytest
     ports:
-      - $FABRIC_TLS_CA_PORT:$FABRIC_TLS_CA_PORT
+      - $FABRIC_ECERT_CA_PORT:7054
