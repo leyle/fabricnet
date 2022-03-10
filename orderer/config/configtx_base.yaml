@@ -24,8 +24,8 @@ Application: &ApplicationDefaults
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
         LifecycleEndorsement:
-            Type: ImplicitMeta
-            Rule: "MAJORITY Endorsement"
+            Type: Signature
+            Rule: OR('operatorMSP.admin', 'operatorMSP.peer', 'operatorMSP.client')
         Endorsement:
             Type: ImplicitMeta
             Rule: "MAJORITY Endorsement"
