@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ./env.sh
+. ./env.explorer
 
 ./generateConnectionFile.sh
 

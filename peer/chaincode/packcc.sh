@@ -2,6 +2,8 @@
 
 . ./chaincode.env
 
+echo "Current chaincode name: $CC_NAME"
+
 
 WORK_BASE=$PATH_BASE/chaincode
 
