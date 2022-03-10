@@ -24,4 +24,10 @@ echo "generateOrgMSP.sh"
 # generate peer startup files
 ./generatePeerDockerFile.sh
 
+# copy explorer
+EXPLORER_SRC=$BASE_PATH/explorer
+EXPLORER_DST=$HOST_NODE_VOLUME/explorer
+rm -rf $EXPLORER_DST
+cp -r $EXPLORER_SRC $EXPLORER_DST
+
 echo "done"
