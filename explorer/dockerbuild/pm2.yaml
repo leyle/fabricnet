@@ -1,0 +1,22 @@
+apps:
+  - script: ./app/main.js
+    name: 'web'
+    instances: 1
+    max_restarts: 100
+    autorestart: true
+    kill_timeout: 3000
+    listen_timeout: 10000
+    env:
+      DISCOVERY_AS_LOCALHOST: false
+      EXPLORER_APP_ROOT: /opt/explorer
+  - script: ./app/sync.js
+    args: 'fabricapp fabricapp 1'
+    name: 'sync'
+    instances: 1
+    max_restarts: 200 
+    autorestart: true
+    kill_timeout: 3000
+    listen_timeout: 10000
+    env:
+      DISCOVERY_AS_LOCALHOST: false
+      EXPLORER_APP_ROOT: /opt/explorer
