@@ -29,5 +29,5 @@ export CC_ID=$CC_PKG_ID
 
 sed "s|\$CC_HOST_NAME|$CC_HOST_NAME|g; " ./cc_template.yaml > cc.yaml
 
-docker-compose -f cc.yaml up
+docker-compose -f cc.yaml up -d
 
