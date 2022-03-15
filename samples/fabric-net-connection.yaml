@@ -1,0 +1,134 @@
+certificateAuthorities:
+  ecert.dev.emali.dev:
+    caName: ecert.dev.emali.dev
+    httpOptions:
+      verify: false
+    registrar:
+      enrollId: orgadmin
+      enrollSecret: orgpasswd
+    tlsCACerts:
+      pem:
+      - '-----BEGIN CERTIFICATE-----
+
+        MIICMzCCAdqgAwIBAgIURX2A6AlOegJE9oyLou4vOQ5AblQwCgYIKoZIzj0EAwIw
+
+        azELMAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQK
+
+        EwtIeXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRwwGgYDVQQDExNlY2VydC5k
+
+        ZXYuZW1hbGkuZGV2MB4XDTIyMDMxMDAyMjcwMFoXDTM3MDMwNjAyMjcwMFowazEL
+
+        MAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQKEwtI
+
+        eXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRwwGgYDVQQDExNlY2VydC5kZXYu
+
+        ZW1hbGkuZGV2MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAECy7JENkubSy+nBYN
+
+        NTDJdXSr+jL/PgRe9lJ9T43rLf9qZ/0lRffN55SrZ46ALl8GFB51nOLZeQNmX1Xy
+
+        zVAJ96NcMFowDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQEwHQYD
+
+        VR0OBBYEFCL1cDXFVg3MZrrgJqkm/3RcW1ZLMBUGA1UdEQQOMAyHBAAAAACHBH8A
+
+        AAEwCgYIKoZIzj0EAwIDRwAwRAIgLHxhFWotRTgJJH1r5yE8627tQlTD5xDSIKiX
+
+        HaEpAYICIHMP77zbEZI0oQmnNXrzGjH3RpYNIINkUChJPhqksHVJ
+
+        -----END CERTIFICATE-----'
+    url: https://ecert.dev.emali.dev:6000
+  tlsca.dev.emali.dev:
+    caName: tlsca.dev.emali.dev
+    httpOptions:
+      verify: false
+    tlsCACerts:
+      pem:
+      - '-----BEGIN CERTIFICATE-----
+
+        MIICMzCCAdqgAwIBAgIUTLGy0bhsMdT9DAyvleKFiyA4JJkwCgYIKoZIzj0EAwIw
+
+        azELMAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQK
+
+        EwtIeXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRwwGgYDVQQDExN0bHNjYS5k
+
+        ZXYuZW1hbGkuZGV2MB4XDTIyMDMxMDAyMjcwMFoXDTM3MDMwNjAyMjcwMFowazEL
+
+        MAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQKEwtI
+
+        eXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRwwGgYDVQQDExN0bHNjYS5kZXYu
+
+        ZW1hbGkuZGV2MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE4Vbx0SN2C5sL/GF3
+
+        o8GnGff1jLvTLt3v+PVxIXBv8Z52ZZv8Pm+TBK9XHKHkSfVZrGap3yzIh5dR526u
+
+        7iAUTKNcMFowDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQEwHQYD
+
+        VR0OBBYEFEjihg/cVJJ2ckTUIqh7f8KtvmosMBUGA1UdEQQOMAyHBAAAAACHBH8A
+
+        AAEwCgYIKoZIzj0EAwIDRwAwRAIgK3sdEJbWHUIrlKpaommF72v5IDGwFwZqf3Zt
+
+        QA1SUdwCIAgdydK5kGuVvFlp4zLsZfaJeZzh7MbnkySw9YEub1wB
+
+        -----END CERTIFICATE-----'
+    url: https://tlsca.dev.emali.dev:5999
+client:
+  connection:
+    timeout:
+      peer:
+        endorser: 300
+  credentialStore:
+    cryptoStore:
+      path: /tmp/.fabricappworkdir/msp
+    path: /tmp/.fabricappworkdir/identitypublickey
+  organization: dev
+name: fabricnet
+organizations:
+  dev:
+    certificateAuthorities:
+    - ecert.dev.emali.dev
+    cryptoPath: /tmp/.fabricappworkdir/identitypublickey
+    mspid: devMSP
+    peers:
+    - peer0.dev.emali.dev
+peers:
+  peer0.dev.emali.dev:
+    grpcOptions:
+      hostnameOverride: peer0.dev.emali.dev
+      ssl-target-name-override: peer0.dev.emali.dev
+    tlsCACerts:
+      pem: '-----BEGIN CERTIFICATE-----
+
+        MIIC6TCCApCgAwIBAgIUZuwsNT9bqsAG717RzBcbf+pC7owwCgYIKoZIzj0EAwIw
+
+        azELMAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQK
+
+        EwtIeXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRwwGgYDVQQDExN0bHNjYS5k
+
+        ZXYuZW1hbGkuZGV2MB4XDTIyMDMxMDAyMjcwMFoXDTIzMDMxNTAwMzEwMFowaTEL
+
+        MAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQKEwtI
+
+        eXBlcmxlZGdlcjENMAsGA1UECxMEcGVlcjEcMBoGA1UEAxMTcGVlcjAuZGV2LmVt
+
+        YWxpLmRldjBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKnVnAdE4QEo9DJQEoiV
+
+        TX+3/KXqO0mi3XoYwq/66SwNLv7YnK1xtf8ntjTxoqH4ZgE2vswmXaisdRMf8vVD
+
+        /iajggESMIIBDjAOBgNVHQ8BAf8EBAMCA6gwHQYDVR0lBBYwFAYIKwYBBQUHAwEG
+
+        CCsGAQUFBwMCMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYEFPO74XGpJ6y1cNQw2p56
+
+        cU37TjTMMB8GA1UdIwQYMBaAFEjihg/cVJJ2ckTUIqh7f8KtvmosMCkGA1UdEQQi
+
+        MCCCCWxvY2FsaG9zdIITcGVlcjAuZGV2LmVtYWxpLmRldjBkBggqAwQFBgcIAQRY
+
+        eyJhdHRycyI6eyJoZi5BZmZpbGlhdGlvbiI6IiIsImhmLkVucm9sbG1lbnRJRCI6
+
+        InBlZXIwLmRldi5lbWFsaS5kZXYiLCJoZi5UeXBlIjoicGVlciJ9fTAKBggqhkjO
+
+        PQQDAgNHADBEAiAqVmy4rRCxi7hqeQzRFc3AID5IMTsHBH8+U7L64oaKtwIgWYab
+
+        BSU2iuHpq0lEBe75n/wMrue9nSVIvDr7xxd+B1s=
+
+        -----END CERTIFICATE-----'
+    url: grpcs://peer0.dev.emali.dev:6001
+version: 1.0.0

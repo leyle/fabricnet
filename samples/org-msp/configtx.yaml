@@ -1,0 +1,27 @@
+- AnchorPeers:
+  - Host: peer0.dev.emali.dev
+    Port: 6001
+  - Host: peer1.dev.emali.dev
+    Port: 6011
+  - Host: peer2.dev.emali.dev
+    Port: 6021
+  - Host: peer3.dev.emali.dev
+    Port: 6031
+  - Host: peer4.dev.emali.dev
+    Port: 6041
+  ID: devMSP
+  MSPDir: dev/msp
+  Name: devMSP
+  Policies:
+    Admins:
+      Rule: OR('devMSP.admin')
+      Type: Signature
+    Endorsement:
+      Rule: OR('devMSP.peer')
+      Type: Signature
+    Readers:
+      Rule: OR('devMSP.admin', 'devMSP.peer', 'devMSP.client')
+      Type: Signature
+    Writers:
+      Rule: OR('devMSP.admin', 'devMSP.peer', 'devMSP.client')
+      Type: Signature

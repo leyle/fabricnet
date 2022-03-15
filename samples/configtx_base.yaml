@@ -1,0 +1,116 @@
+Application:
+  Capabilities: &id002
+    V2_0: true
+  Organizations: null
+  Policies: &id003
+    Admins:
+      Rule: MAJORITY Admins
+      Type: ImplicitMeta
+    Endorsement:
+      Rule: MAJORITY Endorsement
+      Type: ImplicitMeta
+    LifecycleEndorsement:
+      Rule: OR('operatorMSP.admin', 'operatorMSP.peer', 'operatorMSP.client')
+      Type: Signature
+    Readers:
+      Rule: ANY Readers
+      Type: ImplicitMeta
+    Writers:
+      Rule: ANY Writers
+      Type: ImplicitMeta
+Capabilities:
+  Application:
+    V2_0: true
+  Channel:
+    V2_0: true
+  Orderer:
+    V2_0: true
+Channel:
+  Capabilities: &id004
+    V2_0: true
+  Policies: &id010
+    Admins:
+      Rule: MAJORITY Admins
+      Type: ImplicitMeta
+    Readers:
+      Rule: ANY Readers
+      Type: ImplicitMeta
+    Writers:
+      Rule: ANY Writers
+      Type: ImplicitMeta
+Orderer:
+  Addresses: &id005
+  - orderer0.orderer.emali.dev:6006
+  - orderer1.orderer.emali.dev:6016
+  - orderer2.orderer.emali.dev:6026
+  BatchSize: &id006
+    AbsoluteMaxBytes: 99 MB
+    MaxMessageCount: 10
+    PreferredMaxBytes: 512 KB
+  BatchTimeout: 2s
+  Capabilities: &id007
+    V2_0: true
+  EtcdRaft: &id008
+    Consenters:
+    - ClientTLSCert: /home/axel/github/fabricnet/nodevolume/channel/orderer0/cert.pem
+      Host: orderer0.orderer.emali.dev
+      Port: 6006
+      ServerTLSCert: /home/axel/github/fabricnet/nodevolume/channel/orderer0/cert.pem
+    - ClientTLSCert: /home/axel/github/fabricnet/nodevolume/channel/orderer1/cert.pem
+      Host: orderer1.orderer.emali.dev
+      Port: 6016
+      ServerTLSCert: /home/axel/github/fabricnet/nodevolume/channel/orderer1/cert.pem
+    - ClientTLSCert: /home/axel/github/fabricnet/nodevolume/channel/orderer2/cert.pem
+      Host: orderer2.orderer.emali.dev
+      Port: 6026
+      ServerTLSCert: /home/axel/github/fabricnet/nodevolume/channel/orderer2/cert.pem
+  OrdererType: etcdraft
+  Organizations: &id001
+  - ID: ordererMSP
+    MSPDir: /home/axel/github/fabricnet/nodevolume/orderer/msp
+    Name: ordererMSP
+    OrdererEndpoints:
+    - orderer0.orderer.emali.dev:6006
+    - orderer1.orderer.emali.dev:6016
+    - orderer2.orderer.emali.dev:6026
+    Policies:
+      Admins:
+        Rule: OR('ordererMSP.admin')
+        Type: Signature
+      Readers:
+        Rule: OR('ordererMSP.member')
+        Type: Signature
+      Writers:
+        Rule: OR('ordererMSP.member')
+        Type: Signature
+  Policies: &id009
+    Admins:
+      Rule: MAJORITY Admins
+      Type: ImplicitMeta
+    BlockValidation:
+      Rule: ANY Writers
+      Type: ImplicitMeta
+    Readers:
+      Rule: ANY Readers
+      Type: ImplicitMeta
+    Writers:
+      Rule: ANY Writers
+      Type: ImplicitMeta
+Organizations: *id001
+Profiles:
+  DefaultProfile:
+    Application:
+      Capabilities: *id002
+      Organizations: null
+      Policies: *id003
+    Capabilities: *id004
+    Orderer:
+      Addresses: *id005
+      BatchSize: *id006
+      BatchTimeout: 2s
+      Capabilities: *id007
+      EtcdRaft: *id008
+      OrdererType: etcdraft
+      Organizations: *id001
+      Policies: *id009
+    Policies: *id010
