@@ -4,6 +4,7 @@ import (
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 	"github.com/leyle/go-api-starter/logmiddleware"
+	"implicitcc/contract"
 	"io/ioutil"
 	"log"
 	"os"
@@ -23,7 +24,7 @@ func main() {
 	logger.Info().Str("CHAINCODE_ID", ccid).Send()
 	logger.Info().Str("CHAINCODE_SERVER_ADDRESS", addr).Send()
 
-	cc, err := contractapi.NewChaincode(&contractapi.Contract{})
+	cc, err := contractapi.NewChaincode(&contract.SmartContract{})
 	if err != nil {
 		logger.Error().Msgf("new chaincode failed, %v", err)
 		os.Exit(1)
