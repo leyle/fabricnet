@@ -25,7 +25,7 @@ do
     HOST_VOLUME_BASE=$HOST_NODE_VOLUME
     PEER_HOST_VOLUME=$HOST_VOLUME_BASE/$PEER_NAME
     PEER_RCA_CERT=$PEER_HOST_VOLUME/msp/cacerts/ca-cert.pem
-    PEER_TLS_CERT=$PEER_HOST_VOLUME/tls-msp//signcerts/cert.pem
+    PEER_TLS_CERT=$PEER_HOST_VOLUME/tls-msp/tlscacerts/tls-ca-cert.pem
 
     echo $PEER_HOST_VOLUME
 
