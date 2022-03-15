@@ -5,21 +5,23 @@ import (
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/leyle/go-api-starter/logmiddleware"
-	"github.com/leyle/go-api-starter/util"
 )
 
 type CreateStatePrivateForm struct {
+	Id      string   `json:"id"`
 	StateId string   `json:"stateId"`
 	Data    string   `json:"data"`
 	Targets []string `json:"targets"`
 }
 
-func (sp *SmartContract) CreateStatePrivate(ctx contractapi.TransactionContextInterface, transientKey string) (string, error) {
+func (sp *SmartContract) CreateStatePrivate(ctx contractapi.TransactionContextInterface, transientKey string) error {
 	logger := logmiddleware.GetLogger(logmiddleware.LogTargetStdout)
+	logger.Info().Str("transientKey", transientKey).Send()
+
 	tMap, err := ctx.GetStub().GetTransient()
 	if err != nil {
 		logger.Error().Str("transientKey", transientKey).Err(err)
-		return "", err
+		return err
 	}
 
 	// get raw private data
@@ -27,34 +29,34 @@ func (sp *SmartContract) CreateStatePrivate(ctx contractapi.TransactionContextIn
 	if !ok {
 		err = fmt.Errorf("get private data from transientKey[%s] failed", transientKey)
 		logger.Error().Err(err)
-		return "", err
+		return err
 	}
+
+	logger.Debug().Str("method", "CreateStatePrivate").Str("data", string(form)).Send()
 
 	// unmarshal private data
 	var statePrivateForm CreateStatePrivateForm
 	err = jsoniter.Unmarshal(form, &statePrivateForm)
 	if err != nil {
 		logger.Error().Msgf("unmarshal input data failed, %v", err)
-		return "", err
+		return err
 	}
 
 	// generate db form
-	id := util.GenerateDataId()
 	creator, err := GetClientMSPID(ctx)
 	if err != nil {
 		logger.Error().Err(err)
-		return "", nil
+		return err
 	}
 
 	dbForm := &StatePrivate{
-		Id:      id,
+		Id:      statePrivateForm.Id,
 		StateId: statePrivateForm.StateId,
 		Data:    []byte(statePrivateForm.Data),
 		Creator: creator,
-		CreateT: util.GetCurTime(),
 	}
-	dbForm.UpdateT = dbForm.CreateT
 	dbData, _ := jsoniter.Marshal(dbForm)
+	logger.Debug().Str("method", "CreateStatePrivate").Str("saveData", string(dbData)).Send()
 
 	// write to many targets
 	// target collection name format is: _implicit_org_MSPID
@@ -65,11 +67,12 @@ func (sp *SmartContract) CreateStatePrivate(ctx contractapi.TransactionContextIn
 		err = savePrivateState(ctx, collectionName, dbForm.Id, dbData)
 		if err != nil {
 			logger.Error().Str("collectionName", collectionName).Str("stateId", dbForm.StateId).Str("id", dbForm.Id).Err(err)
-			return "", err
+			return err
 		}
+		logger.Info().Str("collectionName", collectionName).Str("stateId", dbForm.StateId).Str("id", dbForm.Id).Msg("write success")
 	}
 
-	return dbForm.Id, nil
+	return err
 }
 
 func savePrivateState(ctx contractapi.TransactionContextInterface, collectionName, id string, data []byte) error {

@@ -5,7 +5,6 @@ import (
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/leyle/go-api-starter/logmiddleware"
-	"github.com/leyle/go-api-starter/util"
 )
 
 type CreateStateForm struct {
@@ -31,9 +30,7 @@ func (s *SmartContract) CreateState(ctx contractapi.TransactionContextInterface,
 		DataType:      form.DataType,
 		Data:          []byte(form.Data),
 		PrivateDataId: form.PrivateDataId,
-		CreateT:       util.GetCurTime(),
 	}
-	dbForm.UpdateT = dbForm.CreateT
 	logger.Info().Str("id", dbForm.Id).Str("dataType", dbForm.DataType).Msg("create state")
 
 	dbData, err := jsoniter.Marshal(dbForm)
