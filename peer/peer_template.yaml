@@ -5,6 +5,20 @@ networks:
         name: $DOCKER_NETWORK_NAME
 
 services:
+  $COUCHDB_CONTAINER_NAME:
+    image: couchdb:$COUCHDB_VERSION
+    container_name: $COUCHDB_CONTAINER_NAME
+    environment:
+        - TZ=$TIMEZONE
+        - COUCHDB_USER=$COUCHDB_USER
+        - COUCHDB_PASSWORD=$COUCHDB_PASSWD
+    ports:
+        # why container internal port must be 5984 ?
+        # because peer connects to db from docker internal network and couchdb itself only listen on 5984
+        - $COUCHDB_PORT:5984
+    networks:
+        - mytest
+
   $PEER_CONTAINER_NAME:
     image: hyperledger/fabric-peer:$FABRIC_CLIENT_VERSION
     container_name: $PEER_CONTAINER_NAME
@@ -39,6 +53,11 @@ services:
         - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:$PEER_PORT3
         - CORE_METRICS_PROVIDER=prometheus
 
+        # couchdb
+        - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+        - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=$COUCHDB_CONTAINER_NAME:5984
+        - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=$COUCHDB_USER
+        - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=$COUCHDB_PASSWD
     volumes:
         - ${PEER_HOST_VOLUME}:/etc/peer
         - ${PEER_HOST_VOLUME}/production:/var/hyperledger/production
@@ -51,3 +70,5 @@ services:
         - $PEER_PORT:$PEER_PORT
         - $PEER_PORT2:$PEER_PORT2
         - $PEER_PORT3:$PEER_PORT3
+    depends_on:
+        - $COUCHDB_CONTAINER_NAME

@@ -18,10 +18,14 @@ do
     CUR_PEER_PORT3=$((PEER_PORT3 + PEER_BASE))
     CUR_CC_PORT=$((CC_PORT + PEER_BASE))
 
+    # couchdb port
+    CUR_COUCHDB_PORT=$((COUCHDB_PORT + PEER_BASE))
+
     PEER_IDX=peer${idx}
     PEER_NAME=${PEER_IDX}.${ORG_NAME}.${TLD}
     PEER_CONTAINER_NAME=$PEER_NAME
     CC_HOST_NAME=cc${idx}.${ORG_NAME}.${TLD}
+    COUCHDB_CONTAINER_NAME=couchdb${idx}.${ORG_NAME}.${TLD}
     echo $PEER_NAME
     
     HOST_VOLUME_BASE=$HOST_NODE_VOLUME
@@ -34,7 +38,7 @@ do
     cp ./config/core.yaml $PEER_CORE_FILE
 
     # genereate peer docker compose file
-    sed "s|\$PEER_CONTAINER_NAME|$PEER_CONTAINER_NAME|g; " ./peer_template.yaml > $PEER_DOCKER_COMPOSE_FILE
+    sed "s|\$PEER_CONTAINER_NAME|$PEER_CONTAINER_NAME|g; s|\$COUCHDB_CONTAINER_NAME|$COUCHDB_CONTAINER_NAME|g; " ./peer_template.yaml > $PEER_DOCKER_COMPOSE_FILE
 
     # generate peer env file
     PEER_ENV_FILE=$PEER_HOST_VOLUME/peer.env
@@ -42,13 +46,17 @@ do
     echo "export PEER_HOST_VOLUME=$PEER_HOST_VOLUME" >> $PEER_ENV_FILE 
     echo "export PEER_CORE_FILE=$PEER_CORE_FILE" >> $PEER_ENV_FILE
     echo "export CC_HOST_BUILDER=$CC_HOST_BUILDER" >> $PEER_ENV_FILE
-    echo "export PEER_CONTAINER_NAME=$PEER_CONTAINER_NAME" >> $PEER_ENV_FILE
-    echo "export CC_HOST_NAME=$CC_HOST_NAME" >> $PEER_ENV_FILE
 
+    echo "export PEER_CONTAINER_NAME=$PEER_CONTAINER_NAME" >> $PEER_ENV_FILE
     echo "export PEER_PORT=$CUR_PEER_PORT1" >> $PEER_ENV_FILE
     echo "export PEER_PORT2=$CUR_PEER_PORT2" >> $PEER_ENV_FILE
     echo "export PEER_PORT3=$CUR_PEER_PORT3" >> $PEER_ENV_FILE
+
+    echo "export CC_HOST_NAME=$CC_HOST_NAME" >> $PEER_ENV_FILE
     echo "export CC_PORT=$CUR_CC_PORT" >> $PEER_ENV_FILE
+
+    echo "export COUCHDB_CONTAINER_NAME=$COUCHDB_CONTAINER_NAME" >> $PEER_ENV_FILE
+    echo "export COUCHDB_PORT=$CUR_COUCHDB_PORT" >> $PEER_ENV_FILE
 
     # copy env.sh to peer's folder
     cp ./env.sh $PEER_HOST_VOLUME/env.sh
