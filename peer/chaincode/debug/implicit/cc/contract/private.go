@@ -62,15 +62,28 @@ func (sp *SmartContract) CreateStatePrivate(ctx contractapi.TransactionContextIn
 	// target collection name format is: _implicit_org_MSPID
 	// firstly, write data to target collections, then write to itself collection
 	for _, mspid := range statePrivateForm.Targets {
-		collectionName := generateCollectionName(mspid)
-		logger.Info().Str("collectionName", collectionName).Str("stateId", dbForm.StateId).Str("id", dbForm.Id).Msg("current writing private data")
+		if mspid == creator {
+			continue
+		}
+		collectionName := generateCollectionName(mspid, true)
+		logger.Info().Str("collectionName", collectionName).Str("stateId", dbForm.StateId).Str("id", dbForm.Id).Msg("current writing shared private data")
 		err = savePrivateState(ctx, collectionName, dbForm.Id, dbData)
 		if err != nil {
 			logger.Error().Str("collectionName", collectionName).Str("stateId", dbForm.StateId).Str("id", dbForm.Id).Err(err)
 			return err
 		}
-		logger.Info().Str("collectionName", collectionName).Str("stateId", dbForm.StateId).Str("id", dbForm.Id).Msg("write success")
+		logger.Info().Str("collectionName", collectionName).Str("stateId", dbForm.StateId).Str("id", dbForm.Id).Msg("write shared private data success")
 	}
+
+	// write private to self
+	collectionName := generateCollectionName(creator, false)
+	logger.Info().Str("collectionName", collectionName).Str("stateId", dbForm.StateId).Str("id", dbForm.Id).Msg("current writing self private data")
+	err = savePrivateState(ctx, collectionName, dbForm.Id, dbData)
+	if err != nil {
+		logger.Error().Str("collectionName", collectionName).Str("stateId", dbForm.StateId).Str("id", dbForm.Id).Err(err)
+		return err
+	}
+	logger.Info().Str("collectionName", collectionName).Str("stateId", dbForm.StateId).Str("id", dbForm.Id).Msg("write self private data success")
 
 	return err
 }
@@ -93,7 +106,7 @@ func (sp *SmartContract) GetStatePrivateById(ctx contractapi.TransactionContextI
 		return nil, err
 	}
 
-	collectionName := generateCollectionName(mspid)
+	collectionName := generateCollectionName(mspid, false)
 	dbData, err := ctx.GetStub().GetPrivateData(collectionName, id)
 	if err != nil {
 		logger.Error().Str("id", id).Msgf("get private data failed, %v", err)

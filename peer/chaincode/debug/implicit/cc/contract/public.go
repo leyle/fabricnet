@@ -15,8 +15,9 @@ type CreateStateForm struct {
 }
 
 func (s *SmartContract) CreateState(ctx contractapi.TransactionContextInterface, args string) error {
-	var form CreateStateForm
 	logger := logmiddleware.GetLogger(logmiddleware.LogTargetConsole)
+
+	var form CreateStateForm
 	logger.Debug().Msg(args)
 
 	err := jsoniter.UnmarshalFromString(args, &form)

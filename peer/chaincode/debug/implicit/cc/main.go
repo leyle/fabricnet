@@ -12,10 +12,10 @@ import (
 )
 
 func main() {
+	logger := logmiddleware.GetLogger(logmiddleware.LogTargetConsole)
+
 	ccid := os.Getenv("CHAINCODE_ID")
 	addr := os.Getenv("CHAINCODE_SERVER_ADDRESS")
-
-	logger := logmiddleware.GetLogger(logmiddleware.LogTargetConsole)
 
 	if ccid == "" || addr == "" {
 		logger.Error().Msg("No chaincode ccid or listening address")
