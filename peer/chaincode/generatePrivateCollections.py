@@ -3,10 +3,11 @@
 import sys
 import json
 
-def no_share_collection(org_name):
+def no_share_collection(mspid: str):
+    mspid_lower = mspid.lower()
     data = {
-        "name": f"{org_name}mspnoshare",
-        "policy": f"OR('{org_name}MSP.member')",
+        "name": f"{mspid_lower}noshare",
+        "policy": f"OR('{mspid}.member')",
         "requiredPeerCount": 0,
         "maxPeerCount": 1,
         "blockToLive": 0,
@@ -16,9 +17,10 @@ def no_share_collection(org_name):
 
     return data
 
-def share_write_collection(org_name):
-    data = no_share_collection(org_name)
-    data['name'] = f"{org_name}mspsharewrite"
+def share_write_collection(mspid):
+    mspid_lower = mspid.lower()
+    data = no_share_collection(mspid)
+    data['name'] = f"{mspid_lower}sharewrite"
     data['memberOnlyWrite'] = False
     return data
 
@@ -34,29 +36,22 @@ def write_to_json(file_path, data):
     with open(file_path, 'w') as f:
         f.write(json_data)
 
-def generate_connections_json(org_num, file_path):
+def generate_connections_json(mspids, file_path):
     datas = []
-    # generate data for operator node
-    org_name = "operator"
-    no_share = no_share_collection(org_name)
-    share_write = share_write_collection(org_name)
-    datas.append(no_share)
-    datas.append(share_write)
-
-    for num in range(2, org_num + 1):
-        org_name = f"org{num}"
-        no_share = no_share_collection(org_name)
-        share_write = share_write_collection(org_name)
+    for mspid in mspids[:]:
+        no_share = no_share_collection(mspid)
+        share_write = share_write_collection(mspid)
         datas.append(no_share)
         datas.append(share_write)
 
     write_to_json(file_path, datas)
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("invalid argument, usage: python generateConnectionsJson.py ORG_NUM TARGET_FILE")
+    if len(sys.argv) <= 2:
+        print("invalid argument, usage: python generateConnectionsJson.py mspidA mspidB ...")
         sys.exit(1)
 
-    org_num = sys.argv[1]
-    file_path = sys.argv[2]
-    generate_connections_json(int(org_num), file_path)
+    mspids = sys.argv[1:]
+    print(mspids)
+    file_path = "./private_collections.json"
+    generate_connections_json(mspids, file_path)
