@@ -24,4 +24,16 @@ done
 
 ORG_BASE=$HOST_NODE_VOLUME/$ORG_NAME
 ORG_MSP=$ORG_NAME/msp
-python ./pyscripts/generateConfigTX.py --mspid $ORG_MSPID --mspdir $ORG_MSP --peers $PEERS --filepath $ORG_BASE/configtx.yaml
+ORG_ADD_WORKDIR=$ORG_BASE/addorg
+mkdir -p $ORG_ADD_WORKDIR
+python ./pyscripts/generateConfigTX.py --mspid $ORG_MSPID --mspdir $ORG_MSP --peers $PEERS --filepath $ORG_BASE/configtx.yaml --addorgpath $ORG_ADD_WORKDIR/configtx.yaml
+
+# generate add org json data
+export FABRIC_CFG_PATH=$ORG_ADD_WORKDIR
+RAW_JSON=$ORG_ADD_WORKDIR/base.json
+RESULT_JSON=$ORG_ADD_WORKDIR/${ORG_MSPID}.json
+configtxgen -printOrg $ORG_MSPID > $RAW_JSON
+
+python ./pyscripts/addOrgConfig.py --peers $PEERS --rawjson $RAW_JSON --resultpath $RESULT_JSON
+
+rm $RAW_JSON
