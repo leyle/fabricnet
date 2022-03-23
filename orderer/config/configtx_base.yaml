@@ -78,8 +78,8 @@ Channel: &ChannelDefaults
             Type: ImplicitMeta
             Rule: "ANY Writers"
         Admins:
-            Type: ImplicitMeta
-            Rule: "MAJORITY Admins"
+            Type: Signature
+            Rule: OR('operatorMSP.admin', 'operatorMSP.peer', 'operatorMSP.client')
 
     Capabilities:
         <<: *ChannelCapabilities

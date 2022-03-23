@@ -68,6 +68,9 @@ do
     # copy joinChannel.sh to peer's folder
     cp ./joinChannel.sh $PEER_HOST_VOLUME/joinChannel.sh
 
+    # copy addNewOrg.sh to peer's folder
+    cp ./addNewOrg.sh $PEER_HOST_VOLUME/addNewOrg.sh
+
     # copy chaincode to peer's folder
     cp -r chaincode $PEER_HOST_VOLUME/chaincode
 

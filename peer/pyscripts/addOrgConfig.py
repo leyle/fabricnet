@@ -20,14 +20,14 @@ def generate_values(peers):
     for peer in peers:
         host, port = peer.split(':')
         hp = {
-            "Host": host,
-            "Port": int(port)
+            "host": host,
+            "port": int(port)
         }
         anchor_peers.append(hp)
 
     delta = {
         "mod_policy": "Admins",
-        "values": {
+        "value": {
             "anchor_peers": anchor_peers,
         },
         "version": 0,
