@@ -52,7 +52,7 @@ export TLS_CA_FILE=$ORDERER_TLS_CA_FILE
 ORDERER_HOSTPORT=$ORDERER_HOST:$ORDERER_PORT
 
 # peer channel join -b $CHANNEL_BLOCK
-peer channel fetch config ${CHANNEL_NAME}.block -o ${ORDERER_HOSTPORT} --ordererTLSHostnameOverride $ORDERER_HOST -c $CHANNEL_NAME --tls --cafile $TLS_CA_FILE
+peer channel fetch 0 ${CHANNEL_NAME}.block -o ${ORDERER_HOSTPORT} --ordererTLSHostnameOverride $ORDERER_HOST -c $CHANNEL_NAME --tls --cafile $TLS_CA_FILE
 peer channel join -b ${CHANNEL_NAME}.block
 
 # 
