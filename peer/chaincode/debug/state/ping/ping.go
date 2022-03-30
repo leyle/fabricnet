@@ -1,15 +1,17 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
-	jsoniter "github.com/json-iterator/go"
-	"github.com/leyle/go-api-starter/util"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"time"
+
+	jsoniter "github.com/json-iterator/go"
+	"github.com/leyle/go-api-starter/util"
 
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
 	"github.com/hyperledger/fabric-sdk-go/pkg/gateway"
@@ -25,6 +27,7 @@ const (
 
 const dataType = "emalidevtest"
 const postData = "{\"company\":\"emali.io\",\"programmer\":\"zls\",\"age\":99,\"purpose\":\"test chaincode\"}"
+const privateData = "{\"privateCom\":\"emali.io\",\"key1\":\"zls\",\"key2\":99,\"somedata\":\"test chaincode\"}"
 const orgName = "emalidev"
 
 const funcCreateState = "CreateState"
@@ -52,6 +55,16 @@ type CreateForm struct {
 	OrgName     string   `json:"orgName"`
 	CreateTime  *CurT    `json:"createTime"`
 	UpdateTime  *CurT    `json:"updateTime"`
+}
+
+type PrivateForm struct {
+	Id         string `json:"id"`
+	OrgName    string `json:"orgName"`
+	DataId     string `json:"dataId"`     // client data unique id
+	Data       string `json:"data"`       // user input data, json encoded
+	DataType   string `json:"dataType"`   // client DataType name
+	CreateTime *CurT  `json:"createTime"` // system timestamp
+	UpdateTime *CurT  `json:"updateTime"` // system timestamp
 }
 
 func getCurT() *CurT {
@@ -161,6 +174,43 @@ func main() {
 		log.Fatalf("Failed to evaluate transaction: %v", err)
 	}
 	log.Println(string(result))
+
+	log.Println("--> Create Private data")
+	// create private data
+	pkey := util.GenerateDataId()
+	transientData := &PrivateForm{
+		Id:         util.GenerateDataId(),
+		OrgName:    "testorgname",
+		DataId:     formId,
+		Data:       privateData,
+		DataType:   dataType,
+		CreateTime: getCurT(),
+	}
+	transientData.UpdateTime = transientData.CreateTime
+	tBytes, err := json.Marshal(&transientData)
+	if err != nil {
+		log.Println(err.Error())
+		os.Exit(1)
+	}
+	log.Println(string(tBytes))
+
+	tData := map[string][]byte{
+		pkey: tBytes,
+	}
+	withT := gateway.WithTransient(tData)
+	txn, err := contract.CreateTransaction("CreateStatePrivate", withT)
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
+	}
+
+	ret, err := txn.Submit("operatormspsharewrite", pkey)
+	// ret, err := txn.Submit("operatormspnoshare", pkey)
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
+	}
+	log.Println(ret)
 
 	log.Println("============ application-golang ends ============")
 }
