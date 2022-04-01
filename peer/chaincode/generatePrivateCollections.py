@@ -47,7 +47,7 @@ def generate_connections_json(mspids, file_path):
     write_to_json(file_path, datas)
 
 if __name__ == "__main__":
-    if len(sys.argv) <= 2:
+    if len(sys.argv) < 2:
         print("invalid argument, usage: python generateConnectionsJson.py mspidA mspidB ...")
         sys.exit(1)
 
