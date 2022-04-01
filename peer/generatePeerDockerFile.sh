@@ -16,6 +16,7 @@ do
     CUR_PEER_PORT2=$((PEER_PORT2 + PEER_BASE))
     # operation port
     CUR_PEER_PORT3=$((PEER_PORT3 + PEER_BASE))
+
     CUR_CC_PORT=$((CC_PORT + PEER_BASE))
 
     # couchdb port
@@ -25,6 +26,8 @@ do
     PEER_NAME=${PEER_IDX}.${ORG_NAME}.${TLD}
     PEER_CONTAINER_NAME=$PEER_NAME
     CC_HOST_NAME=cc${idx}.${ORG_NAME}.${TLD}
+    # LB is short for load balancer
+    CC_LB_HOST_NAME=cc.${ORG_NAME}.${TLD}
     COUCHDB_CONTAINER_NAME=couchdb${idx}.${ORG_NAME}.${TLD}
     echo $PEER_NAME
     
@@ -54,6 +57,7 @@ do
 
     echo "export CC_HOST_NAME=$CC_HOST_NAME" >> $PEER_ENV_FILE
     echo "export CC_PORT=$CUR_CC_PORT" >> $PEER_ENV_FILE
+    echo "export CC_LB_HOST_NAME=$CC_LB_HOST_NAME" >> $PEER_ENV_FILE
 
     echo "export COUCHDB_CONTAINER_NAME=$COUCHDB_CONTAINER_NAME" >> $PEER_ENV_FILE
     echo "export COUCHDB_PORT=$CUR_COUCHDB_PORT" >> $PEER_ENV_FILE
