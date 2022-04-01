@@ -7,6 +7,8 @@
 END_IDX=$((PEER_NUM - 1))
 echo $END_IDX
 
+declare -a NGINX_PEER_LIST
+
 for idx in $(seq 0 $END_IDX);
 do
     PEER_BASE=$((idx * 10))
@@ -30,6 +32,9 @@ do
     CC_LB_HOST_NAME=cc.${ORG_NAME}.${TLD}
     COUCHDB_CONTAINER_NAME=couchdb${idx}.${ORG_NAME}.${TLD}
     echo $PEER_NAME
+
+    hostport="$PEER_NAME:$CUR_PEER_PORT1;"
+    NGINX_PEER_LIST+=($hostport)
     
     HOST_VOLUME_BASE=$HOST_NODE_VOLUME
     PEER_HOST_VOLUME=$HOST_VOLUME_BASE/$PEER_NAME
@@ -85,3 +90,30 @@ do
 
     chmod 775 -R $PEER_HOST_VOLUME
 done
+
+
+# generate nginx conf
+NGINX_WORK_DIR=$HOST_NODE_VOLUME/ccproxy
+mkdir -p $NGINX_WORK_DIR
+
+export CC_LB_HOST_NAME=cc.${ORG_NAME}.${TLD}
+NGINX_CONF=$NGINX_WORK_DIR/nginx.conf
+NGINX_DOCKER_YAML=$NGINX_WORK_DIR/nginx_compose.yaml
+
+UPSTREAM_HOSTS=""
+for peer in ${NGINX_PEER_LIST[@]}
+do
+    UPSTREAM_HOSTS="${UPSTREAM_HOSTS}server $peer"
+done
+echo $UPSTREAM_HOSTS
+
+export SERVICE_HOSTS=$UPSTREAM_HOSTS
+
+sed "s|\$SERVICE_HOSTS|$SERVICE_HOSTS|g; s|\$CC_LB_PORT|$CC_LB_PORT|g; s|\$CC_LB_HOST_NAME|$CC_LB_HOST_NAME|g;" ./chaincode/nginx/template.nginx.conf > $NGINX_CONF
+
+# generate nginx docker compose file
+sed "s|\$CC_LB_HOST_NAME|$CC_LB_HOST_NAME|g" ./chaincode/nginx/template.nginx.compose.yaml > $NGINX_DOCKER_YAML
+
+cp ./env.sh $NGINX_WORK_DIR/env.sh
+cp ./chaincode/nginx/start.sh $NGINX_WORK_DIR/start.sh
+chmod +x $NGINX_WORK_DIR/*.sh
