@@ -7,7 +7,7 @@
 END_IDX=$((PEER_NUM - 1))
 echo $END_IDX
 
-declare -a NGINX_PEER_LIST
+declare -a NGINX_CC_LIST
 
 for idx in $(seq 0 $END_IDX);
 do
@@ -33,8 +33,8 @@ do
     COUCHDB_CONTAINER_NAME=couchdb${idx}.${ORG_NAME}.${TLD}
     echo $PEER_NAME
 
-    hostport="$PEER_NAME:$CUR_PEER_PORT1;"
-    NGINX_PEER_LIST+=($hostport)
+    hostport="$CC_HOST_NAME:$CUR_CC_PORT;"
+    NGINX_CC_LIST+=($hostport)
     
     HOST_VOLUME_BASE=$HOST_NODE_VOLUME
     PEER_HOST_VOLUME=$HOST_VOLUME_BASE/$PEER_NAME
@@ -101,9 +101,9 @@ NGINX_CONF=$NGINX_WORK_DIR/nginx.conf
 NGINX_DOCKER_YAML=$NGINX_WORK_DIR/nginx_compose.yaml
 
 UPSTREAM_HOSTS=""
-for peer in ${NGINX_PEER_LIST[@]}
+for cc in ${NGINX_CC_LIST[@]}
 do
-    UPSTREAM_HOSTS="${UPSTREAM_HOSTS}server $peer"
+    UPSTREAM_HOSTS="${UPSTREAM_HOSTS}server $cc\n"
 done
 echo $UPSTREAM_HOSTS
 
