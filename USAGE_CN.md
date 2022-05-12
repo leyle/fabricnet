@@ -491,9 +491,179 @@ cd $BASE/nodevolume/peer0.dev.emali.dev/
 
 ### chaincode smoke testing
 
+// TODO
+
 
 
 ---
+
+## 新增一个 org 到已有网络中
+
+**主要步骤**
+
+新增一个 org 到已有网络中，主要包含如下四步骤：
+
+1. 规划此 org 的网络及节点布局，启动 ca/peer 等程序，生成相关证书配置等文件；
+2. 提交此 org 的相关证书及 configtx.yaml 等文件给已有网络的 operator；
+3. 已有网络的 operator 将此 org 的相关信息添加到相关 channel 配置中，并分发 tlsca、orderer address、channel name 等信息给申请者；
+4. 申请者拿到了相关信息后，加入指定 channel，安装 chaincode，同步数据，参与 transaction 等；
+
+
+
+**交互文件及信息**
+
+将角色分为管理网络的 operator 及申请加入网络的 applicant。
+
+`applicant 需要提交给 operator 的文件及信息清单`
+
+- configtx.yaml 文件
+- org config json 文件（包含了各种证书及 peer 连接信息）
+
+`operator 需要提交给 applicant 的文件及信息清单`
+
+- orderer tls ca 证书
+- orderer host port 连接地址
+- channel name
+- chaincode name
+- 当前网络中正在运行的 chaincode 的 sequence
+
+
+
+下面分别描述各个步骤
+
+###  1. 规划新 org 的网络布局及相关节点启动，生成配置
+
+```shell
+# 见上一节 网络启动步骤 中的前面几步，至加入网络之前的步骤。
+# 需要注意的是，需要确保本机构的 peer 节点、tlsca、ca 等节点的域名可以被其他网络节点访问到
+```
+
+
+
+---
+
+### 2. 提交此 org 的相关证书及 configtx.yaml 文件给已有网络的 operator
+
+```shell
+# 在上一步的操作成功后，会产生一个关于本机构的增量配置
+# 其位置为
+$BASE/nodevolume/$ORG_NAME/addorg
+
+# 将这整个目录发送给 operator
+
+# 建议，以被 org 的 name 作为目录名，其内包含 addorg 目录
+# 比如本 org name 为 org3，那么创建一个 org3 的目录后，内部再存放 addorg/ 目录
+# 目的是让 operator 更好地识别谁是谁。
+```
+
+
+
+---
+
+### 3. operator 操作更新网络 channel 配置，将新的 org 加入到网络中
+
+```shell
+# operator 收到了上一步的增量配置文件后，进入自己的 peer 节点配置中，进行相关的配置操作
+# 此处假设在 peer0 节点上操作
+
+# 假设收到的新 org 的配置信息存放在 /tmp/org3
+
+# peer 的路径是
+$BASE/nodevolume/peer0.operator.emali.dev/
+
+# 进入此 peer 内部后，执行如下命令
+# ./addNewOrg.sh $ORG_CONFIG_JSON $CHANNEL_NAME $ORDERER_HOST $ORDERER_PORT $ORDERER_TLS_CA
+./addNewOrg.sh /tmp/org3/addorg/org3MSP.json fabricapp orderer0.org0.emali.dev 6006 /tmp/tls-ca-cert.pem
+
+# 执行成功的结果大概如下所示（见下一个代码块）
+# 当其执行成功后，新的 org 可以在自己的 peer 上进行 join channel 等操作
+
+```
+
+update channel configuration 成功，加入新的 org 配置的大概提示例子
+
+```shell
+axel@org1:~/github/fabricnet/nodevolume/peer0.operator.emali.dev$ ./addNewOrg.sh /tmp/org3/addorg/org3MSP.json fabricapp orderer0.org0.emali.dev 6006 /tmp/tls-ca-cert.pem 
+MSPID: org3MSP
+2. fetch fabricapp config
+2022-05-12 07:42:54.803 UTC [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
+2022-05-12 07:42:54.805 UTC [cli.common] readBlock -> INFO 002 Received block: 14
+2022-05-12 07:42:54.805 UTC [channelCmd] fetch -> INFO 003 Retrieving last config block: 0
+2022-05-12 07:42:54.807 UTC [cli.common] readBlock -> INFO 004 Received block: 0
+3. decode channel config protobuf file to json file
+4. append new org channel config policy to the fabricapp config
+5. translate raw_config.json to config.block
+6. translate modified_config.json to modified_config.pb
+7. calculate the delta between these two config protobufs
+8. decode the delta protobuf to json format
+9. envelop the delta data
+10. re encode the enveloped delta data into protobuf type
+11. siging the updated channel config
+2022-05-12 07:42:54.983 UTC [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
+12. update channel config, sends updated data to orderer
+2022-05-12 07:42:55.008 UTC [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
+2022-05-12 07:42:55.022 UTC [channelCmd] update -> INFO 002 Successfully submitted channel update
+```
+
+
+
+---
+
+### 4. 新的 org 在自己的 peer 上操作 join channel/install chaincode 等操作
+
+join channel
+
+```shell
+# 在执行 join channel 操作之前，需要从 operator 那里收到如下信息
+
+# 1. orderer tls ca 证书
+# 2. orderer host port 值
+
+# 假设 orderer tls ca 证书已收到，放在本地 /tmp/tls-ca-cert.pem
+# 假设 orderer host port 值为 orderer0.org0.emali.dev 6006
+
+# 进入本 org 的各个 peer 节点，执行相关 join channel 的操作
+# 注意，有几个 peer 节点，需要在每一个 peer 节点都执行 join channel 的操作
+# 此处仅展示一个节点的操作
+# 此处的 join channel 与上一节 网络启动步骤 中的 “各个 peer 加入 channel“操作一致
+# 比如进入如下目录
+$BASE/nodevolume/peer0.org3.emali.dev
+# 执行类似于如下命令
+# joinChannel.sh 支持的参数依次是 CHANNEL_NAME TLS_CA ORDERER_ADDR ORDERER_PORT
+./joinChannel.sh fabricapp /tmp/tls-ca-cert.pem orderer0.org0.emali.dev 6006
+```
+
+install/approve chaincode
+
+```shell
+# 当我们进行 chaincode 的 approve 时，需要知道 chaincode name、 sequence 值，此值是从 operator 处得来的。
+# 需要注意的是，因为加入了新的 org，所以 private data 的 collections.json 的定义变了（添加了新的 org 的 collection names）
+# 所以，需要 update 整个网络所有的 org 的 chaincode 的 sequence 值。
+
+# 这是一个复杂的操作，不要每一个参与 org 都要进行 approve 操作，最后由 operator 进行 commit 操作
+
+# 1. 在新的 org 上进行 pack、install、approve 操作
+# pack 及 install 不再赘述，仅说明 approve 操作
+# approve 时，需要在当前 chaincode sequence 值的基础上 +1，比如当前是 1，那么此时需要输入 2
+# 比如
+./approve.sh fabricapp 2 orderer0.org0.emali.dev 6006 /tmp/tls-ca-cert.pem
+
+# 当在新的 org 进行了 approve 操作后，需要立刻进行 chaincode 的 start 操作，同时起动器来 chaincode 的 nginx 服务，否则可能会出现，operator commit 了此定义，而其他机构进行交易时，数据发送到了此新的 org，而此 org 的 chaincode server 并没有启动，整个 transaction 处理失败。
+
+# 2. 在各个旧有的 org 上执行 approve 新的 sequence 的操作
+# 需要在每一个 org 进行此操作，包括 operator
+./approve.sh fabricapp 2 orderer0.org0.emali.dev 6006 /tmp/tls-ca-cert.pem
+
+# 3. 在 operator 上，进行 commit 此新的 chaincode definition 操作
+./commit.sh
+
+```
+
+
+
+
+
+
 
 ## 脚本设计与实现细节
 
