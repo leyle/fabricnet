@@ -476,13 +476,21 @@ cd $BASE/nodevolume/peer0.dev.emali.dev/
 # 下面是一个例子
 ./approve.sh fabricapp 1 orderer0.org0.emali.dev 6006 /tmp/tls-ca-cert.pem
 
-# 4. commit chaincode
+# 4. 启动 external chaincode service
+# 需要注意，必须在 operator 进行 commit chaincode definition 之前，进行 chaincode 的启动
+# chaincode 的启动，需要在每一个 peer 上都进行
+# 同时需要注意，可能同一个 org 的多个 peer 之间，没有进行 approve 操作的 peer 会缺少一个 last.env 的环境变脸，这个值可以从已有的 peer 的 chaincode 工作目录下复制过来
+./start_cc.sh
+
+# 5. 启动 external chaincode service 的 nginx proxy
+# 进入目录 $BASE/nodevolume/ccproxy
+./start.sh 
+
+# 6. commit chaincode
 # 当所有的机构的所有的 peer 都进行相关的 install/approve 操作后，operator 节点可以进行 commit chaincode 操作
 ./commit.sh
 
-# 5. 启动 external chaincode service
-# 在每一个 peer 上，实际上进行了 install 操作后，就可以进行 cc 的启动了
-./start_cc.sh
+
 ```
 
 
@@ -492,6 +500,29 @@ cd $BASE/nodevolume/peer0.dev.emali.dev/
 ### chaincode smoke testing
 
 // TODO
+
+
+
+---
+
+### 启动 blockchain explorer
+
+```shell
+# 进入到 $BASE/nodevolume/explorer
+# 默认情况下，执行 ./start.sh 即可
+
+# 默认情况下的配置的 channel name 是 fabricapp
+# 如果默认的 channel name 不是此值，那么需要修改
+# 首先执行 ./generateConnectionFile.sh 生成下面这个配置
+# $BASE/nodevolume/explorer/connection-profile/faricapp.json
+
+# 后面再修改上面的文件，修改 channels 项下面的 key 名字为 fabricapp 名字为具体的 channel name
+
+# 然后再执行 
+. ./env.explorer
+docker-compose -f explorer.yaml up -d
+
+```
 
 
 
@@ -650,6 +681,9 @@ install/approve chaincode
 
 # 当在新的 org 进行了 approve 操作后，需要立刻进行 chaincode 的 start 操作，同时起动器来 chaincode 的 nginx 服务，否则可能会出现，operator commit 了此定义，而其他机构进行交易时，数据发送到了此新的 org，而此 org 的 chaincode server 并没有启动，整个 transaction 处理失败。
 
+# 1.1 启动 chaincode service 及 chaincode service 的 nginx proxy
+# 见上面的 “网络启动步骤” 的 安装 chaincode 小节
+
 # 2. 在各个旧有的 org 上执行 approve 新的 sequence 的操作
 # 需要在每一个 org 进行此操作，包括 operator
 ./approve.sh fabricapp 2 orderer0.org0.emali.dev 6006 /tmp/tls-ca-cert.pem
@@ -678,6 +712,15 @@ install/approve chaincode
 ---
 
 ## 参考命令
+
+```shell
+alias dockerps='docker ps -a --format "table {{.Names}}\t{{.Ports}}\t{{.Networks}}\t{{.Status}}"'
+
+alias dockerinto='function _dockerinto(){ docker exec -it $1 sh; };_dockerinto'
+
+alias opensslinfo='function _opensslinfo(){ openssl x509 -in $1 -noout -subject -issuer -dates; };_opensslinfo'
+
+```
 
 
 
