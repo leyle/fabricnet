@@ -1,0 +1,31 @@
+# when debug is true, server will log request headers
+debug: true
+
+# sync and query api listening port
+# default listening on 0.0.0.0:PORT
+server:
+  PORT: 3001
+
+# fabric connection config
+# paths show as container paths, not host paths
+fabric:
+  CONNECTION_PROFILE: /home/app/connection.yaml
+  WALLET: /home/app/wallet
+
+chaincode:
+  CHANNEL_NAME: fabricapp
+  CHAINCODE_NAME: state
+  CHAINCODE_NAME_PRIVATE: "state"
+
+# mongodb
+mongodb:
+  MONGODB_HOSTPORT: mongodb-syncandquery-27017:27017
+  MONGODB_USERNAME: dbuser
+  MONGODB_PASSWORD: dbpasswd
+  MONGODB_DATABASE: dev
+
+log:
+  TAG: console|file
+  FILENAME: /home/app/logs/event_server.log
+  # unit: kilobyte
+  MAXSIZE: 50000

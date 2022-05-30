@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export VERSION_MONGODB=4.4
+export VERSION_SYNC_AND_QUERY=v1.2.1
+

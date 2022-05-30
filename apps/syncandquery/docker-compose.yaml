@@ -1,0 +1,45 @@
+version: "3.6"
+
+networks:
+    emalidev:
+        name: fabricnet 
+
+services:
+    syncandquery:
+      image: registry.gitlab.com/blockchain-project-emaliandzhengzhou/fabric-crud-setup/eventservice:$SYNC_AND_QUERY_IMAGE_VERSION
+      container_name: $SYNC_AND_QUERY_CONTAINER_NAME
+      ports:
+          - $SYNC_AND_QUERY_PORT:3001
+      volumes:
+          - $SYNC_AND_QUERY_CONFIG_FILE:/home/app/apiconfig.yaml
+          - $SYNC_AND_QUERY_LOG:/home/app/logs/api_server.log
+
+          - $FABRIC_CONNECTION_FILE:/home/app/connection.yaml
+          - $FABRIC_WALLET:/home/app/wallet
+      depends_on:
+          - mongodb
+      networks:
+        - emalidev
+
+    mongodb:
+      image: mongo:$MONGODB_VERSION
+      restart: always
+      container_name: $MONGODB_CONTAINER_NAME
+      environment:
+        - TZ=$TIMEZONE
+        - MONGO_INITDB_ROOT_USERNAME=$MONGODB_ROOT_USER
+        - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_ROOT_PASSWD
+        - MONGO_INITDB_DATABASE=$MONGODB_APP_DATABASE
+      healthcheck:
+        test: mongo --eval 'db.runCommand("ping").ok' localhost:27017/test
+        interval: 10s
+        timeout: 10s
+        retries: 5
+        start_period: 40s
+      volumes:
+        - $PWD/data:/data/db
+        - ./db-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      ports:
+        - $MONGODB_PORT:27017
+      networks:
+        - emalidev

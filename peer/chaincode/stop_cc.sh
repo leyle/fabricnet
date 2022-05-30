@@ -26,4 +26,5 @@ if [ -z "$CC_PKG_ID" ]; then
 fi
 
 export CC_ID=$CC_PKG_ID
-docker-compose -f cc.yaml up down -v
+
+docker-compose -f cc.yaml down -v
