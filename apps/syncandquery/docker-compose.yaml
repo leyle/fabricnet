@@ -12,7 +12,7 @@ services:
           - $SYNC_AND_QUERY_PORT:3001
       volumes:
           - $SYNC_AND_QUERY_CONFIG_FILE:/home/app/apiconfig.yaml
-          - $SYNC_AND_QUERY_LOG:/home/app/logs/api_server.log
+          - $SYNC_AND_QUERY_LOG:/home/app/logs/event_server.log
 
           - $FABRIC_CONNECTION_FILE:/home/app/connection.yaml
           - $FABRIC_WALLET:/home/app/wallet
@@ -37,7 +37,7 @@ services:
         retries: 5
         start_period: 40s
       volumes:
-        - $PWD/data:/data/db
+        - $MONGODB_DATA_HOST_PATH:/data/db
         - ./db-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       ports:
         - $MONGODB_PORT:27017
