@@ -8,4 +8,4 @@ rm -f $FABRIC_CONNECTION_FILE
 rm -f $FABRIC_WALLET/*
 
 sudo rm -rf $MONGODB_DATA_HOST_PATH
-sudo rm -f $SYNC_AND_QUERY_LOG/*
+sudo rm -f $SYNC_AND_QUERY_LOG

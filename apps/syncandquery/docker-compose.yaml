@@ -11,13 +11,13 @@ services:
       ports:
           - $SYNC_AND_QUERY_PORT:3001
       volumes:
-          - $SYNC_AND_QUERY_CONFIG_FILE:/home/app/apiconfig.yaml
-          - $SYNC_AND_QUERY_LOG:/home/app/logs/event_server.log
+        - $SYNC_AND_QUERY_CONFIG_FILE:/home/app/apiconfig.yaml
+        - $SYNC_AND_QUERY_LOG:/home/app/logs
 
-          - $FABRIC_CONNECTION_FILE:/home/app/connection.yaml
-          - $FABRIC_WALLET:/home/app/wallet
+        - $FABRIC_CONNECTION_FILE:/home/app/connection.yaml
+        - $FABRIC_WALLET:/home/app/wallet
       depends_on:
-          - mongodb
+        - mongodb
       networks:
         - emalidev
 

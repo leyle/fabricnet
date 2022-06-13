@@ -4,7 +4,9 @@ debug: true
 # sync and query api listening port
 # default listening on 0.0.0.0:PORT
 server:
-  PORT: 3001
+  PORT: 3002
+  URL: http://localhost:3002
+  EVENT_SYNC_AND_SEARCH_API: http://localhost:3001
 
 # fabric connection config
 # paths show as container paths, not host paths
@@ -15,7 +17,7 @@ fabric:
 chaincode:
   CHANNEL_NAME: fabricapp
   CHAINCODE_NAME: state
-  CHAINCODE_NAME_PRIVATE: "state"
+  CHAINCODE_NAME_PRIVATE: state
 
 # mongodb
 mongodb:
@@ -27,6 +29,5 @@ mongodb:
 log:
   TAG: console|file
   FILENAME: /home/app/logs/event_server.log
-  # unit: byte
-  # 100m,000k,000
-  MAXSIZE: 100000000
+  # unit: kilobyte
+  MAXSIZE: 50000
