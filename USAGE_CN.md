@@ -695,7 +695,17 @@ install/approve chaincode
 
 
 
+---
 
+## 从已有 channel 移除一个机构
+
+```shell
+# 移除的操作按照非常简单，执行一个指定的脚本即可
+# 参数依次是 mspid channel_name  orderer_host orderer_port orderer_tls_ca_certificate
+./removeOrg.sh org2MSP fabricapp orderer0.org0.emali.dev 6006 /tmp/tls-ca-cert.pem
+
+# 成功后，无需后续步骤，也无需更新 chaincode sequence 值
+```
 
 
 
