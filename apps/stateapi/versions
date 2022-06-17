@@ -1,4 +1,0 @@
-#!/bin/bash
-
-export VERSION_STATE_API=v1.2.0
-
