@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	jsoniter "github.com/json-iterator/go"
@@ -31,6 +32,8 @@ const privateData = "{\"privateCom\":\"emali.io\",\"key1\":\"zls\",\"key2\":99,\
 const orgName = "emalidev"
 
 const funcCreateState = "CreateState"
+const funcUpdateState = "UpdateState"
+const funcDeleteState = "DeleteState"
 
 var (
 	chName       string
@@ -172,6 +175,63 @@ func main() {
 	result, err = contract.EvaluateTransaction("GetStateById", formId)
 	if err != nil {
 		log.Fatalf("Failed to evaluate transaction: %v", err)
+	}
+	log.Println(string(result))
+
+	log.Println("--> Update Transaction: CreateState")
+	stateArgs2 := getCreateForm(formId)
+	_, err = contract.SubmitTransaction(funcUpdateState, stateArgs2)
+	if err != nil {
+		log.Fatalf("Failed to update transaction: %v", err)
+	}
+
+	// get back this data by GetStateById()
+	log.Println("--> Evaluate Transaction: GetStateById")
+	result, err = contract.EvaluateTransaction("GetStateById", formId)
+	if err != nil {
+		log.Fatalf("Failed to evaluate transaction: %v", err)
+	}
+	log.Println(string(result))
+
+	log.Println("--> Update Transaction: CreateState")
+	stateArgs3 := getCreateForm(formId)
+	_, err = contract.SubmitTransaction(funcUpdateState, stateArgs3)
+	if err != nil {
+		log.Fatalf("Failed to update transaction: %v", err)
+	}
+
+	// get back this data by GetStateById()
+	log.Println("--> Evaluate Transaction: GetStateById")
+	result, err = contract.EvaluateTransaction("GetStateById", formId)
+	if err != nil {
+		log.Fatalf("Failed to evaluate transaction: %v", err)
+	}
+	log.Println(string(result))
+
+	log.Println("--> Delete Transaction: DeleteState")
+	_, err = contract.SubmitTransaction(funcDeleteState, formId)
+	if err != nil {
+		log.Fatalf("Failed to delete transaction: %v", err)
+	}
+
+	// get back this data by GetStateById()
+	log.Println("--> Evaluate Transaction: GetStateById")
+	result, err = contract.EvaluateTransaction("GetStateById", formId)
+	if err != nil {
+		emsg := err.Error()
+		if strings.Contains(emsg, "no data for this id") {
+			log.Println(emsg)
+		} else {
+			log.Fatalf("Failed to evaluate transaction: %v", err)
+		}
+	}
+	log.Println(string(result))
+
+	// get state history
+	log.Println("--> Evaluate Transaction: GetStateHistoryById")
+	result, err = contract.EvaluateTransaction("GetStateHistoryById", formId)
+	if err != nil {
+		log.Fatalf("Failed to evaluate GetStateHistoryById transaction: %v", err)
 	}
 	log.Println(string(result))
 
